@@ -1322,6 +1322,7 @@ def main():
             clock.tick(60)
 
     while True:
+        print("Hello, World!")
         main_menu()
         play()
 
