@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 
 import pygame
-from pygame import time, sprite, Vector2
+from pygame import time, Vector2
 
 from . import config
 from .collisions import (
@@ -12,8 +12,8 @@ from .collisions import (
     handle_player_collisions,
 )
 from .effects import Pop, Pow, ScreenEffect
-from .entities import Ship, Asteroid, MainLaser, SinLaser, Bomb
-from .ui import Mmanim, Button, Bar, Upgrade, BossName
+from .entities import Ship, Asteroid, Boss
+from .ui import Mmanim, Button, Bar, BossName
 
 
 def create_impact(pos, color=(255, 255, 255), count=5):
@@ -88,9 +88,7 @@ def update_game_state(score, frames_passed, can_gen, ast_cd, cacd):
         if cacd <= 0:
             cacd = ast_cd
             if config.ship.sprite:
-                num_asteroids = random.randint(
-                    1, 2 + config.ship.sprite.bosses_killed
-                )
+                num_asteroids = random.randint(1, 2 + config.ship.sprite.bosses_killed)
             else:
                 num_asteroids = random.randint(1, 1)
             for _ in range(num_asteroids):
@@ -139,9 +137,7 @@ def render_screen(score, bg_off):
         )
     for i in range(-1, 10):
         y_pos = (i * (config.H // 8)) + bg_off + shake_offset.y
-        pygame.draw.line(
-            config.screen, (40, 40, 40), (0, y_pos), (config.W, y_pos), 1
-        )
+        pygame.draw.line(config.screen, (40, 40, 40), (0, y_pos), (config.W, y_pos), 1)
 
     draw_group(config.pops, shake_offset)
     draw_group(config.pows, shake_offset)
@@ -234,11 +230,17 @@ def main_menu():
         config.screen.fill((0, 0, 0))
         for i in range(11):
             pygame.draw.line(
-                config.screen, (40, 40, 40), (config.W // 10 * i, 0), (config.W // 10 * i, config.H), 1
+                config.screen,
+                (40, 40, 40),
+                (config.W // 10 * i, 0),
+                (config.W // 10 * i, config.H),
+                1,
             )
         for i in range(-1, 10):
             y_pos = i * (config.H // 8)
-            pygame.draw.line(config.screen, (40, 40, 40), (0, y_pos), (config.W, y_pos), 1)
+            pygame.draw.line(
+                config.screen, (40, 40, 40), (0, y_pos), (config.W, y_pos), 1
+            )
         mmanim.draw(config.screen)
         for b in config.buttons:
             b.draw(config.screen)
@@ -272,8 +274,12 @@ def main():
     assets_dir = Path(__file__).parent / "assets"
 
     try:
-        original_boss_img = pygame.image.load(assets_dir / "boss_name_1.png").convert_alpha()
-        config.boss_image_asset = pygame.transform.scale(original_boss_img, (config.W - 100, 600))
+        original_boss_img = pygame.image.load(
+            assets_dir / "boss_name_1.png"
+        ).convert_alpha()
+        config.boss_image_asset = pygame.transform.scale(
+            original_boss_img, (config.W - 100, 600)
+        )
         config.shoot_sound = pygame.mixer.Sound(assets_dir / "laserShoot.wav")
         config.shoot_sound.set_volume(1)
         config.boom_sound = pygame.mixer.Sound(assets_dir / "explosion.wav")
@@ -287,7 +293,6 @@ def main():
     config.lv_req = 2
 
     while True:
-        print("Hello, World!")
         main_menu()
         play()
 

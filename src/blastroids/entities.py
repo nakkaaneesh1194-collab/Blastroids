@@ -59,8 +59,12 @@ class Ship(sprite.Sprite):
                     MainLaser(self.pos.copy(), Vector2(i * 2, self.laser_vel.y))
                 )
             if self.sin_lasers:
-                config.lasers.add(SinLaser(self.pos.copy(), Vector2(0, (-i - 5) * 2), "sin 1"))
-                config.lasers.add(SinLaser(self.pos.copy(), Vector2(0, (-i - 5) * 2), "sin 2"))
+                config.lasers.add(
+                    SinLaser(self.pos.copy(), Vector2(0, (-i - 5) * 2), "sin 1")
+                )
+                config.lasers.add(
+                    SinLaser(self.pos.copy(), Vector2(0, (-i - 5) * 2), "sin 2")
+                )
             self.cooldown = self.shoot_delay
             config.shoot_sound.play()
         if mouse[2] and self.bomb_cooldown <= 0:
@@ -83,7 +87,9 @@ class Ship(sprite.Sprite):
                 )
         else:
             for i in range(2):
-                config.pows.add(Pow(self.pos.x, self.pos.y, 1, self.color, Vector2(0, 10)))
+                config.pows.add(
+                    Pow(self.pos.x, self.pos.y, 1, self.color, Vector2(0, 10))
+                )
 
         if self.rect.centerx < 0 or self.rect.centerx > config.W:
             self.pos.x -= self.vel.x * 1.1
@@ -148,7 +154,7 @@ class Asteroid(sprite.Sprite):
         if config.ship.sprite:
             if config.ship.sprite.bosses_killed >= config.lv_req:
                 self.hp = (size * size) // (
-                    640 // (2 ** config.ship.sprite.bosses_killed + 1)
+                    640 // (2**config.ship.sprite.bosses_killed + 1)
                 )
             else:
                 self.hp = (size * size) // (
@@ -226,9 +232,12 @@ class Bomb(Laser):
             if config.ship.sprite.ray_bomb:
                 for i in range(count):
                     angle = (i / count) * 360
-                    vel = Vector2(
-                        math.cos(math.radians(angle)), math.sin(math.radians(angle))
-                    ) * 8
+                    vel = (
+                        Vector2(
+                            math.cos(math.radians(angle)), math.sin(math.radians(angle))
+                        )
+                        * 8
+                    )
                     config.lasers.add(Ray(self.pos, vel))
             else:
                 for i in range(count):
@@ -358,12 +367,16 @@ class Boss(sprite.Sprite):
             if self.timer == 60:
                 config.shoot_sound.play()
                 for i in range(6):
-                    config.enemy_lasers.add(EnemyLaser(Vector2((config.W // 5) * i, -20)))
+                    config.enemy_lasers.add(
+                        EnemyLaser(Vector2((config.W // 5) * i, -20))
+                    )
             if self.timer == 120:
                 self.timer = 0
                 config.shoot_sound.play()
                 for i in range(5):
-                    config.enemy_lasers.add(EnemyLaser(Vector2((config.W // 5) * i + (config.W // 10), -20)))
+                    config.enemy_lasers.add(
+                        EnemyLaser(Vector2((config.W // 5) * i + (config.W // 10), -20))
+                    )
         if self.next_phase == 0:
             self.next_phase = 600
             self.phase += 1

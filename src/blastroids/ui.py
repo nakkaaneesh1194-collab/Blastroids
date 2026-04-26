@@ -258,9 +258,7 @@ class Upgrade(sprite.Sprite):
         if self.wait > 0:
             self.wait -= 1
         mouse_pos = pygame.mouse.get_pos()
-        self.current_size += (
-            self.target_size - self.current_size
-        ) * self.lerp_speed
+        self.current_size += (self.target_size - self.current_size) * self.lerp_speed
         if self.rect.collidepoint(mouse_pos):
             self.target_size = 500
             if pygame.mouse.get_pressed()[0] and self.wait <= 0 and config.ship.sprite:

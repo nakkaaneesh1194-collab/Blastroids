@@ -28,3 +28,8 @@ This track will focus on reducing code complexity, eliminating duplication, and 
 8.  **Apply Polymorphism:**
     -   Refactor the `Laser` class to use a polymorphic design. Create a base `Laser` class and subclasses for each laser type (e.g., `MainLaser`, `Bomb`, `Shrapnel`, `SinLaser`, `Ray`) to eliminate conditional logic based on `self.kind`.
     -   Refactor the `Upgrade` class to use a similar polymorphic approach, creating a base `Upgrade` class with subclasses for each upgrade type, each with its own `apply` method.
+
+9.  **Code Formatting and Linting:**
+    -   Use `ruff` to automatically format the entire codebase to ensure a consistent style.
+    -   Use `ruff` to identify and fix linting issues, such as unused imports and other non-compliant code.
+    -   Remove all "hello world" print statements from the codebase.

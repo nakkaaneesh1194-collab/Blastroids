@@ -2,7 +2,7 @@ import random
 from pygame import sprite
 from . import config
 from .effects import Pop, Pow
-from .entities import MainLaser, SinLaser, Bomb, Shrapnel, Ray
+from .entities import MainLaser, SinLaser, Bomb
 from .ui import Upgrade
 
 
@@ -33,18 +33,18 @@ def handle_player_collisions():
             create_impact(config.ship.sprite.pos, (255, 255, 255), 10)
 
 
-def _handle_asteroid_laser_collision(ast, l, score):
-    hit_color = l.color
+def _handle_asteroid_laser_collision(ast, laser, score):
+    hit_color = laser.color
 
-    create_impact(l.pos, hit_color, 4)
+    create_impact(laser.pos, hit_color, 4)
     if config.ship.sprite:
         config.screen_shake = 1 + config.ship.sprite.laser_exp
     else:
         config.screen_shake = 1
 
-    if isinstance(l, SinLaser):
+    if isinstance(laser, SinLaser):
         damage = config.ship.sprite.laser_dmg * 2 if config.ship.sprite else 1.5
-    elif isinstance(l, MainLaser) and config.ship.sprite.angular_lasers:
+    elif isinstance(laser, MainLaser) and config.ship.sprite.angular_lasers:
         damage = config.ship.sprite.laser_dmg * 2.5 if config.ship.sprite else 1
     else:
         damage = config.ship.sprite.laser_dmg if config.ship.sprite else 1
@@ -54,7 +54,7 @@ def _handle_asteroid_laser_collision(ast, l, score):
 
     if config.ship.sprite and config.ship.sprite.laser_exp > 0:
         config.pops.add(
-            Pop(l.pos.x, l.pos.y, config.ship.sprite.laser_exp * 20, hit_color)
+            Pop(laser.pos.x, laser.pos.y, config.ship.sprite.laser_exp * 20, hit_color)
         )
         num_pows = (
             config.ship.sprite.laser_exp * 2
@@ -62,17 +62,17 @@ def _handle_asteroid_laser_collision(ast, l, score):
             else 40
         )
         for _ in range(num_pows):
-            config.pows.add(Pow(l.pos.x, l.pos.y, 12, hit_color))
+            config.pows.add(Pow(laser.pos.x, laser.pos.y, 12, hit_color))
 
-    if config.ship.sprite and isinstance(l, MainLaser):
+    if config.ship.sprite and isinstance(laser, MainLaser):
         config.ship.sprite.bomb_cooldown = max(
             0, config.ship.sprite.bomb_cooldown - 1
         )
 
-    if isinstance(l, Bomb):
-        l.explode()
+    if isinstance(laser, Bomb):
+        laser.explode()
     else:
-        l.kill()
+        laser.kill()
 
     if ast.hp <= 0:
         config.boom_sound.play()
@@ -92,24 +92,24 @@ def _handle_asteroid_laser_collision(ast, l, score):
 
 def handle_asteroid_collisions(score):
     hits = sprite.groupcollide(config.asteroids, config.lasers, False, False)
-    for ast, l_list in hits.items():
+    for ast, laser_list in hits.items():
         config.hit_sound.play()
-        for l in l_list:
-            score = _handle_asteroid_laser_collision(ast, l, score)
+        for laser in laser_list:
+            score = _handle_asteroid_laser_collision(ast, laser, score)
     return score
 
 
-def _handle_boss_laser_collision(l, score):
+def _handle_boss_laser_collision(laser, score):
     if not config.boss_group.sprite:
         return score
 
-    hit_color = l.color
+    hit_color = laser.color
 
-    create_impact(l.pos, hit_color, 6)
+    create_impact(laser.pos, hit_color, 6)
 
     if config.ship.sprite and config.ship.sprite.laser_exp > 0:
         config.pops.add(
-            Pop(l.pos.x, l.pos.y, config.ship.sprite.laser_exp * 20, hit_color)
+            Pop(laser.pos.x, laser.pos.y, config.ship.sprite.laser_exp * 20, hit_color)
         )
         num_pows = (
             config.ship.sprite.laser_exp * 10
@@ -117,16 +117,16 @@ def _handle_boss_laser_collision(l, score):
             else 40
         )
         for _ in range(num_pows):
-            config.pows.add(Pow(l.pos.x, l.pos.y, 10, hit_color))
+            config.pows.add(Pow(laser.pos.x, laser.pos.y, 10, hit_color))
 
-    if isinstance(l, SinLaser):
+    if isinstance(laser, SinLaser):
         damage = config.ship.sprite.laser_dmg * 2 if config.ship.sprite else 1.5
     else:
         damage = config.ship.sprite.laser_dmg if config.ship.sprite else 1
     config.boss_group.sprite.hp -= damage
 
     config.hit_sound.play()
-    if config.ship.sprite and isinstance(l, MainLaser):
+    if config.ship.sprite and isinstance(laser, MainLaser):
         bomb_cooldown_reduction = (
             1 / ((config.ship.sprite.bosses_killed + 1) / 2)
             if config.ship.sprite
@@ -166,6 +166,6 @@ def _handle_boss_laser_collision(l, score):
 def handle_boss_collisions(score):
     if config.boss_group.sprite:
         hits = sprite.spritecollide(config.boss_group.sprite, config.lasers, True)
-        for l in hits:
-            score = _handle_boss_laser_collision(l, score)
+        for laser in hits:
+            score = _handle_boss_laser_collision(laser, score)
     return score
