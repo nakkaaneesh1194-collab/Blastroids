@@ -7,6 +7,7 @@ screen = None
 screen_shake = 0
 boss_image_asset = None
 shoot_sound, boom_sound, hit_sound = None, None, None
+music_enabled = False
 lv_req = 2
 clock = None
 

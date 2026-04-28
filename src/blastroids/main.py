@@ -185,7 +185,8 @@ def handle_game_over():
 
 
 def play():
-    pygame.mixer.music.play(-1)
+    if config.music_enabled:
+        pygame.mixer.music.play(-1)
     ast_cd, cacd, frames_passed, can_gen, bg_off, score = reset_game()
     running = True
     config.effects.add(effects.ScreenEffect((0, 0, 0), 255, -5))
@@ -282,7 +283,9 @@ def main():
         config.boom_sound.set_volume(1)
         config.hit_sound = pygame.mixer.Sound(assets_dir / "hitHurt.wav")
         config.hit_sound.set_volume(1)
-        pygame.mixer.music.load(assets_dir / "blastroids.mp3")
+        # Temporarily disable music for web deployment compatibility.
+        # Browsers and pygbag frequently reject mp3 playback.
+        config.music_enabled = False
     except Exception as e:
         print(f"Asset load failed: {e}")
 
