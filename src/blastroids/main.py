@@ -185,7 +185,8 @@ def handle_game_over():
 
 
 def play():
-    pygame.mixer.music.play(-1)
+    if config.music_enabled:
+        pygame.mixer.music.play(-1)
     ast_cd, cacd, frames_passed, can_gen, bg_off, score = reset_game()
     running = True
     config.effects.add(effects.ScreenEffect((0, 0, 0), 255, -5))
@@ -276,13 +277,27 @@ def main():
         config.boss_image_asset = pygame.transform.scale(
             original_boss_img, (config.W - 100, 600)
         )
-        config.shoot_sound = pygame.mixer.Sound(assets_dir / "laserShoot.wav")
+        shoot_sound_path = assets_dir / "laserShoot.ogg"
+        if not shoot_sound_path.exists():
+            shoot_sound_path = assets_dir / "laserShoot.wav"
+        config.shoot_sound = pygame.mixer.Sound(shoot_sound_path)
         config.shoot_sound.set_volume(1)
-        config.boom_sound = pygame.mixer.Sound(assets_dir / "explosion.wav")
+        boom_sound_path = assets_dir / "explosion.ogg"
+        if not boom_sound_path.exists():
+            boom_sound_path = assets_dir / "explosion.wav"
+        config.boom_sound = pygame.mixer.Sound(boom_sound_path)
         config.boom_sound.set_volume(1)
-        config.hit_sound = pygame.mixer.Sound(assets_dir / "hitHurt.wav")
+        hit_sound_path = assets_dir / "hitHurt.ogg"
+        if not hit_sound_path.exists():
+            hit_sound_path = assets_dir / "hitHurt.wav"
+        config.hit_sound = pygame.mixer.Sound(hit_sound_path)
         config.hit_sound.set_volume(1)
-        pygame.mixer.music.load(assets_dir / "blastroids.mp3")
+        music_path = assets_dir / "blastroids.ogg"
+        if music_path.exists():
+            pygame.mixer.music.load(music_path)
+            config.music_enabled = True
+        else:
+            config.music_enabled = False
     except Exception as e:
         print(f"Asset load failed: {e}")
 
